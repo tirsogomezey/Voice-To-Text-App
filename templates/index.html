@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Audio Transcription</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        textarea {
+            width: 80%;
+            height: 300px;
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            resize: none;
+            background-color: #fff;
+            color: #333;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script>
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+        var startButton, stopButton, terminal;
+
+        window.onload = function() {
+            startButton = document.getElementById('startButton');
+            stopButton = document.getElementById('stopButton');
+            terminal = document.getElementById('terminal');
+
+            socket.on('transcription', function(data) {
+                terminal.value += data.text + '\n';
+                terminal.scrollTop = terminal.scrollHeight;
+            });
+
+            stopButton.disabled = true;
+        };
+
+        function startTranscription() {
+            startButton.disabled = true;
+            stopButton.disabled = false;
+            terminal.value = '';  // Clear previous transcriptions
+            fetch('/v1/start_transcription')
+                .then(response => response.json())
+                .then(data => console.log(data));
+        }
+
+        function stopTranscription() {
+            stopButton.disabled = true;
+            startButton.disabled = false;
+            fetch('/v1/stop_transcription')
+                .then(response => response.json())
+                .then(data => console.log(data));
+        }
+    </script>
+</head>
+<body>
+    <h1>Real-Time Transcription</h1>
+    <button id="startButton" onclick="startTranscription()">Start Transcription</button>
+    <button id="stopButton" onclick="stopTranscription()">Stop Transcription</button>
+    <br><br>
+    <textarea id="terminal" rows="20" cols="80" readonly></textarea>
+</body>
+</html>

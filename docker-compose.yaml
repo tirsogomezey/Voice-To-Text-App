@@ -1,0 +1,13 @@
+services:
+  voice2text:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - SECRET_KEY=${SECRET_KEY} 
+      - WHISPER_MODEL=${WHISPER_MODEL}
+      - PULSE_SERVER=host.docker.internal  # PulseAudio server
+    volumes:
+      - ./models:/models
+    stdin_open: true
+    tty: true

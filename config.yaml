@@ -1,0 +1,18 @@
+chunking:
+  objectives:
+    - parallel_processing
+    - manage_memory_use
+    - reduce_latency
+  data_structure:
+    type: audio
+    sample_rate: 16000
+    storage: memory
+  chunking_parameters:
+    num_chunks: 1
+    chunk_size: 10 # in seconds
+  processing_logic:
+    function: transcribe_chunk
+
+integration:
+  app_entry: transcription_service.py
+  parse_yaml: true

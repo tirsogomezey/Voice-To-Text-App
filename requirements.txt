@@ -1,0 +1,9 @@
+flask
+Flask-SocketIO
+librosa
+numpy
+pydub
+PyYAML
+sounddevice
+openai-whisper
+python-dotenv
